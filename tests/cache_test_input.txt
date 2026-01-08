@@ -1,0 +1,93 @@
+~> init
+Enter physical memory size (bytes): 256
+Enter page size (bytes): 16
+Enter L1 cache size: 32
+Enter L1 block size: 16
+Enter L1 associativity: 2
+Enter L2 cache size: 64
+Enter L2 block size: 16
+Enter L2 associativity: 2
+Simulator initialized successfully.
+~> vm create 64
+Process created: PID=1 Pages=4
+~> help
+Global Commands:
+  pm help
+  vm help
+  vm_create <bytes>
+  cache help
+  cache set policy fifo|lru
+  vm_access <pid> <hex_addr>
+  vm_dump_pagetable <pid>
+  vm_dump_frames
+  vm_stats
+  cache_stats
+  exit
+~> pm help
+PM Commands:
+  pm alloc <bytes>
+  pm free id <id>
+  pm free addr <address>
+  pm dump
+  pm stats
+  pm set allocator linear|buddy
+  pm set fit first|best|worst
+~> vm help
+VM Commands:
+  vm create <bytes>
+  vm access <pid> <hex_addr>
+  vm dump pagetable <pid>
+  vm dump frames
+  vm set page_policy fifo|lru
+  vm stats
+~> cache help
+Cache Commands:
+  cache set policy fifo|lru
+  cache_stats
+~> cache set policy fifo
+Cache policy set to FIFO
+~> vm access 1 0x0
+Page fault → Frame 0 PA=0
+Cache: L1 MISS → L2 MISS → MEMORY
+~> vm access 1 0x4
+Page hit → PA=4
+Cache: L1 HIT
+~> vm access 1 0x10
+Page fault → Frame 1 PA=16
+Cache: L1 MISS → L2 MISS → MEMORY
+~> vm access 1 0x0
+Page hit → PA=0
+Cache: L1 HIT
+~> vm access 1 0x20
+Page fault → Frame 2 PA=32
+Cache: L1 MISS → L2 MISS → MEMORY
+~> cache_stats
+[L1 Cache]
+Hits: 2
+Misses: 3
+Hit ratio: 40%
+[L2 Cache]
+Hits: 0
+Misses: 3
+Hit ratio: 0%
+~> cache set policy lru
+Cache policy set to LRU
+~> vm access 1 0x0
+Page hit → PA=0
+Cache: L1 MISS → L2 HIT
+~> vm access 1 0x30
+Page fault → Frame 3 PA=48
+Cache: L1 MISS → L2 MISS → MEMORY
+~> vm access 1 0x10
+Page hit → PA=16
+Cache: L1 MISS → L2 HIT
+~> cache_stats
+[L1 Cache]
+Hits: 2
+Misses: 6
+Hit ratio: 25%
+[L2 Cache]
+Hits: 2
+Misses: 4
+Hit ratio: 33.3333%
+~>

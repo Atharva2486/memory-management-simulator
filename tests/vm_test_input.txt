@@ -1,0 +1,96 @@
+~> init
+Enter physical memory size (bytes): 64
+Enter page size (bytes): 16
+Enter L1 cache size: 32
+Enter L1 block size: 16
+Enter L1 associativity: 2
+Enter L2 cache size: 64
+Enter L2 block size: 16
+Enter L2 associativity: 2
+Simulator initialized successfully.
+~> vm help
+VM Commands:
+  vm create <bytes>
+  vm access <pid> <hex_addr>
+  vm dump pagetable <pid>
+  vm dump frames
+  vm set page_policy fifo|lru
+  vm stats
+~> vm set page_policy fifo
+VM page policy set to FIFO
+~> vm create 64
+Process created: PID=1 Pages=4
+~> vm access 1 0x0
+Page fault → Frame 0 PA=0
+Cache: L1 MISS → L2 MISS → MEMORY
+~> vm access 1 0x4
+Page hit → PA=4
+Cache: L1 HIT
+~> vm access 1 0x10
+Page fault → Frame 1 PA=16
+Cache: L1 MISS → L2 MISS → MEMORY
+~> vm access 1 0x20
+Page fault → Frame 2 PA=32
+Cache: L1 MISS → L2 MISS → MEMORY
+~> vm dump pagetable 1
+[VM Page Table]
+PID: 1
+---------------------------------
+Page | Resident | Frame
+---------------------------------
+0    | YES      | 0
+1    | YES      | 1
+2    | YES      | 2
+3    | NO       | -
+~> vm dump frames
+[VM Frame Table]
+---------------------------------
+Frame | PID | Page
+---------------------------------
+0     | 1   | 0
+1     | 1   | 1
+2     | 1   | 2
+3     | -   | -
+~> vm stats
+[VM Stats]
+Policy: FIFO
+Page hits: 1
+Page faults: 3
+Disk reads: 3
+Disk writes: 0
+External fragmentation: 0
+~> vm set page_policy lru
+VM page policy set to LRU
+~> vm access 1 0x0
+Page hit → PA=0
+Cache: L1 MISS → L2 HIT
+~> vm access 1 0x30
+Page fault → Frame 3 PA=48
+Cache: L1 MISS → L2 MISS → MEMORY
+~> vm dump pagetable 1
+[VM Page Table]
+PID: 1
+---------------------------------
+Page | Resident | Frame
+---------------------------------
+0    | YES      | 0
+1    | YES      | 1
+2    | YES      | 2
+3    | YES      | 3
+~> vm dump frames
+[VM Frame Table]
+---------------------------------
+Frame | PID | Page
+---------------------------------
+0     | 1   | 0
+1     | 1   | 1
+2     | 1   | 2
+3     | 1   | 3
+~> vm stats
+[VM Stats]
+Policy: LRU
+Page hits: 2
+Page faults: 4
+Disk reads: 4
+Disk writes: 0
+External fragmentation: 0

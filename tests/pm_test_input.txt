@@ -1,0 +1,172 @@
+~> init
+Enter physical memory size (bytes): 128
+Enter page size (bytes): 16
+Enter L1 cache size: 32
+Enter L1 block size: 16
+Enter L1 associativity: 2
+Enter L2 cache size: 64
+Enter L2 block size: 16
+Enter L2 associativity: 2
+Simulator initialized successfully.
+~> pm set allocator linear
+PM allocator set to LINEAR
+~> pm set fit first
+PM fit strategy set to FIRST
+~> pm alloc 80
+Allocated block
+  ID / Address: 1
+  Size: 80 bytes
+~> pm alloc 20
+Allocated block
+  ID / Address: 2
+  Size: 20 bytes
+~> pm dump
+[Physical Memory Dump]
+[0 - 79] USED  (id=1)
+[80 - 99] USED  (id=2)
+[100 - 127] FREE  (id=-)
+~> pm stats
+[Physical Memory Statistics]
+
+Total Memory           : 128 bytes
+
+Requested Memory       : 100 bytes
+Allocated Memory       : 100 bytes
+Free Memory            : 28 bytes
+
+Internal Fragmentation :
+  - 0 bytes (0.00%)
+
+External Fragmentation :
+  - 0 bytes (0.00%)
+
+~> pm free id 1
+PM free requested
+~> pm dump
+[Physical Memory Dump]
+[0 - 79] FREE  (id=-)
+[80 - 99] USED  (id=2)
+[100 - 127] FREE  (id=-)
+~> pm stats
+[Physical Memory Statistics]
+
+Total Memory           : 128 bytes
+
+Requested Memory       : 100 bytes
+Allocated Memory       : 100 bytes
+Free Memory            : 108 bytes
+
+Internal Fragmentation :
+  - 0 bytes (0.00%)
+
+External Fragmentation :
+  - 28 bytes (21.88%)
+
+~> pm set fit best
+PM fit strategy set to BEST
+~> pm alloc 28
+Allocated block
+  ID / Address: 3
+  Size: 28 bytes
+~> pm dump
+[Physical Memory Dump]
+[0 - 79] FREE  (id=-)
+[80 - 99] USED  (id=2)
+[100 - 127] USED  (id=3)
+~> pm stats
+[Physical Memory Statistics]
+
+Total Memory           : 128 bytes
+
+Requested Memory       : 128 bytes
+Allocated Memory       : 128 bytes
+Free Memory            : 80 bytes
+
+Internal Fragmentation :
+  - 0 bytes (0.00%)
+
+External Fragmentation :
+  - 0 bytes (0.00%)
+
+~> pm set allocator buddy
+PM allocator set to BUDDY
+~> pm dump
+[Physical Memory Dump]
+Buddy Free Lists:
+Order 0 (size=1):
+Order 1 (size=2):
+Order 2 (size=4):
+Order 3 (size=8):
+Order 4 (size=16):
+Order 5 (size=32):
+Order 6 (size=64):
+Order 7 (size=128): 0
+~> pm alloc 1
+Allocated block
+  ID / Address: 0
+  Size: 1 bytes
+~> pm alloc 17
+Allocated block
+  ID / Address: 32
+  Size: 17 bytes
+~> pm alloc 33
+Allocated block
+  ID / Address: 64
+  Size: 33 bytes
+~> pm dump
+[Physical Memory Dump]
+Buddy Free Lists:
+Order 0 (size=1): 1
+Order 1 (size=2): 2
+Order 2 (size=4): 4
+Order 3 (size=8): 8
+Order 4 (size=16): 16
+Order 5 (size=32):
+Order 6 (size=64):
+Order 7 (size=128):
+~> pm stats
+[Physical Memory Statistics]
+
+Total Memory           : 128 bytes
+
+Requested Memory       : 230 bytes
+Allocated Memory       : 225 bytes
+Free Memory            : 31 bytes
+
+Internal Fragmentation :
+  - 46 bytes (35.94%)
+
+External Fragmentation :
+  - 15 bytes (11.72%)
+
+~> pm free addr 0
+PM free requested
+~> pm free addr 32
+PM free requested
+~> pm free addr 64
+PM free requested
+~> pm dump
+[Physical Memory Dump]
+Buddy Free Lists:
+Order 0 (size=1):
+Order 1 (size=2):
+Order 2 (size=4):
+Order 3 (size=8):
+Order 4 (size=16):
+Order 5 (size=32):
+Order 6 (size=64):
+Order 7 (size=128): 0
+~> pm stats
+[Physical Memory Statistics]
+
+Total Memory           : 128 bytes
+
+Requested Memory       : 230 bytes
+Allocated Memory       : 225 bytes
+Free Memory            : 128 bytes
+
+Internal Fragmentation :
+  - 0 bytes (0.00%)
+
+External Fragmentation :
+  - 0 bytes (0.00%)
